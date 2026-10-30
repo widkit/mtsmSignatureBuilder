@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email Signature Builder | MTSM</title>
+<style>
+:root{--red:#cc0000;--ink:#222;--mute:#6f6f6f;--line:#d9d6d2;--paper:#fff;--bg:#f6f4f1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Georgia,"Times New Roman",serif}
+.wrap{max-width:1000px;margin:0 auto;padding:36px 20px 60px}
+h1{font-size:2rem;line-height:1.15;margin:0 0 6px;font-weight:700}
+.lede{margin:0 0 28px;color:var(--mute);max-width:60ch}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:32px;align-items:start}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+form,.panel{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--red);padding:22px}
+label,legend{display:block;font:600 .85rem Arial,sans-serif;margin:0 0 4px}
+.f{margin-bottom:14px}.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+input,select{width:100%;font:15px Arial,sans-serif;padding:9px 10px;border:1px solid #b9b5b0;border-radius:3px;background:#fff;color:var(--ink)}
+input:focus,select:focus,button:focus-visible{outline:3px solid #f2a5a5;outline-offset:1px;border-color:var(--red)}
+fieldset{border:1px solid var(--line);padding:12px;margin:0 0 14px}
+legend{padding:0 6px}
+.role{display:flex;gap:6px;margin-bottom:8px}
+.role input{flex:1}
+.x{flex:none;width:36px;border:1px solid #b9b5b0;background:#fff;border-radius:3px;cursor:pointer;font-size:1.1rem}
+.link{background:none;border:0;color:var(--red);font:600 .85rem Arial,sans-serif;cursor:pointer;padding:0}
+.hint{font:.78rem Arial,sans-serif;color:var(--mute);margin-top:3px}
+.err{font:.85rem Arial,sans-serif;color:#9b0000;margin:0 0 10px;min-height:1.2em}
+#preview{padding:18px;border:1px dashed var(--line);overflow-x:auto;background:#fff}
+.copy{display:block;width:100%;margin-top:14px;padding:13px;border:0;border-radius:3px;background:var(--red);color:#fff;font:700 1rem Arial,sans-serif;cursor:pointer}
+.copy:disabled{background:#c9c4be;cursor:not-allowed}
+#status{font:.9rem Arial,sans-serif;margin:8px 0 0;min-height:1.3em}
+#status a{color:var(--red);font-weight:600}
+ol{font:.92rem/1.55 Arial,sans-serif;padding-left:20px;margin:0}
+h2{font-size:1.1rem;margin:0 0 10px}
+.panel+.panel{margin-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Email signature builder</h1>
+<p class="lede">Fill in your details to get a signature that matches the NJIT and MTSM standard. The logo, fonts, and colors are fixed.</p>
+
+<div class="grid">
+<form id="form" autocomplete="off" onsubmit="return false">
+  <div class="f"><label for="name">Full name</label><input id="name" maxlength="40" autocomplete="name"></div>
+  <div class="row f">
+    <div><label for="deg">Degree</label><select id="deg"><option>B.S.</option><option>B.A.</option><option>B.Arch.</option><option>M.S.</option><option>MBA</option><option>Ph.D.</option></select></div>
+    <div style="flex:2"><label for="major">Major</label><input id="major" maxlength="40" placeholder="Business Analytics"></div>
+  </div>
+  <div class="f"><label for="yr">Class year</label><select id="yr"></select></div>
+  <fieldset><legend>Roles and involvement (up to 4)</legend>
+    <div id="roles"></div>
+    <button type="button" class="link" id="add">+ Add a role</button>
+  </fieldset>
+  <div class="f"><label for="phone">Phone (optional)</label><div class="row"><select id="ptype" aria-label="Phone type" style="flex:0 0 120px"><option value="o">Office</option><option value="p">Personal</option></select><input id="phone" type="tel" maxlength="20" placeholder="973-555-0123"></div><div class="hint">10-digit US number. Formatted for you.</div></div>
+  <div class="f"><label for="email">NJIT email</label><input id="email" type="email" maxlength="60" placeholder="ucid@njit.edu"></div>
+  <div class="f"><label for="li">LinkedIn URL (optional)</label><input id="li" maxlength="120" placeholder="linkedin.com/in/your-name"></div>
+</form>
+
+<div>
+  <div class="panel">
+    <h2>Preview</h2>
+    <div id="preview"></div>
+    <p class="err" id="errs" role="alert"></p>
+    <button class="copy" id="copy" type="button" disabled>Copy signature</button>
+    <p id="status" role="status"></p>
+  </div>
+  <div class="panel">
+    <h2>Add it to Gmail</h2>
+    <ol>
+      <li>Click <b>Copy signature</b>.</li>
+      <li>In Gmail, click the gear icon, then <b>See all settings</b>.</li>
+      <li>On the <b>General</b> tab, scroll to <b>Signature</b> and click <b>Create new</b>.</li>
+      <li>Paste into the box (Ctrl+V or Cmd+V), then click <b>Save Changes</b> at the bottom.</li>
+    </ol>
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+// ---- Settings the web team can change ----
+const CONFIG = {
+  // Replace with a stable, public URL for the logo (e.g. on the MTSM site). Gmail needs a normal https image link.
+  logo: "https://ci3.googleusercontent.com/mail-sig/AIorK4y5ROji6Bz4YI1lkSIIYdQT3CLADqTC-AI9J9JoVO_0GOb1meogOJLBjtDRB7fu_vm69Nf1HR5XiOf0",
+  logoAlt: "NJIT", logoW: 175, logoH: 66,
+  red: "#cc0000", gray: "#6f6f6f", text: "#333333",
+  emailDomain: "@njit.edu", maxRoles: 4,
+  // Page the "Click here for instructions" link opens after copying. Swap in your own MTSM instructions page.
+  helpUrl: "https://support.google.com/mail/answer/8395"
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clean = s => s.replace(/\s+/g, " ").trim();
+const fixCase = s => { s = clean(s); return (s === s.toLowerCase() || s === s.toUpperCase())
+  ? s.toLowerCase().replace(/(^|[\s'’-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()) : s; };
+// For majors, titles, and organizations: keeps acronyms (up to 4 capital letters, e.g. MTSM, NJIT) and mixed-case words as typed.
+const SMALL = new Set(["of", "and", "the", "for", "in", "at", "to", "on", "a", "an"]);
+const cap = w => w.replace(/(^|[-\/(])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+const fixText = s => clean(s).split(" ").map((w, i) => {
+  const L = w.replace(/[^\p{L}]/gu, "");
+  if (!L) return w;
+  if (L === L.toUpperCase() && L !== L.toLowerCase()) return L.length <= 4 ? w : cap(w.toLowerCase());
+  if (L === L.toLowerCase()) return (i && SMALL.has(w)) ? w : cap(w);
+  return w;
+}).join(" ");
+
+// class years
+const y0 = new Date().getFullYear();
+for (let y = y0; y <= y0 + 5; y++) $("yr").add(new Option(y, y));
+
+// role rows
+function addRole(t = "", o = "") {
+  if ($("roles").children.length >= CONFIG.maxRoles) return;
+  const d = document.createElement("div"); d.className = "role";
+  d.innerHTML = '<input class="rt" maxlength="60" placeholder="Title, e.g. Student Assistant" aria-label="Role title"><input class="ro" maxlength="60" placeholder="Organization" aria-label="Organization"><button type="button" class="x" aria-label="Remove role">&times;</button>';
+  d.querySelector(".rt").value = t; d.querySelector(".ro").value = o;
+  d.querySelector(".x").onclick = () => { d.remove(); toggleAdd(); render(); };
+  $("roles").appendChild(d); toggleAdd();
+}
+const toggleAdd = () => $("add").hidden = $("roles").children.length >= CONFIG.maxRoles;
+$("add").onclick = () => { addRole(); render(); };
+addRole(); 
+
+function build() {
+  const errs = [], v = {};
+  v.name = fixCase($("name").value);
+  v.major = fixText($("major").value);
+  v.deg = $("deg").value; v.yr = $("yr").value;
+  v.roles = [...$("roles").children].map(r => ({ t: fixText(r.querySelector(".rt").value), o: fixText(r.querySelector(".ro").value) })).filter(r => r.t);
+
+  const em = $("email").value.trim().toLowerCase();
+  v.email = em;
+  if (em && !(/^[^\s@]+@njit\.edu$/.test(em))) errs.push("Use your NJIT email address (ending in " + CONFIG.emailDomain + ").");
+
+  const pd = $("phone").value.replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
+  v.phone = ""; v.ptype = $("ptype").value === "p" ? "p" : "o";
+  if ($("phone").value.trim()) {
+    if (pd.length === 10) v.phone = "+1 (" + pd.slice(0,3) + ") " + pd.slice(3,6) + "-" + pd.slice(6);
+    else errs.push("Enter a 10-digit US phone number, or leave it blank.");
+  }
+
+  let li = $("li").value.trim(); v.li = "";
+  if (li) {
+    if (!/^https?:\/\//i.test(li)) li = "https://" + li;
+    if (/^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/in\/[\w\-%]+\/?$/i.test(li)) v.li = li;
+    else errs.push("Use your LinkedIn profile link, like linkedin.com/in/your-name.");
+  }
+  v.ready = !!(v.name && v.major && /^[^\s@]+@njit\.edu$/.test(em)) && !errs.length;
+  return { v, errs };
+}
+
+function sigHTML(v) {
+  const C = CONFIG, g = `<span style="color:${C.gray}">`;
+  const line = (t, o, first) => `<div style="margin:${first ? "6pt" : "0"} 0 0">${esc(t)}${o ? " " + g + "| " + esc(o) + "</span>" : ""}</div>`;
+  const roles = v.roles.map((r, i) => line(r.t, r.o, i === 0)).join("");
+  const phone = v.phone ? `<div style="margin:6pt 0 0;color:${C.gray}">${v.ptype}: <span style="color:${C.red}">${esc(v.phone)}</span></div>` : "";
+  const link = (h, t) => `<a href="${esc(h)}" style="color:${C.red};text-decoration:none" target="_blank">${esc(t)}</a>`;
+  const contact = [v.email ? link("mailto:" + v.email, v.email) : "", v.li ? link(v.li, "LinkedIn") : ""].filter(Boolean).join(` ${g}|</span> `);
+  const cTop = v.phone ? "0" : "6pt";
+  return `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border:none"><tbody><tr>` +
+    `<td style="border-right:2pt solid ${C.red};vertical-align:middle;padding:0 14pt 0 0"><img src="${esc(C.logo)}" width="${C.logoW}" height="${C.logoH}" alt="${esc(C.logoAlt)}" style="display:block;border:0"></td>` +
+    `<td style="vertical-align:middle;padding:0 0 0 14pt;font-family:Arial,sans-serif;font-size:9pt;line-height:13pt;color:${C.text}">` +
+    `<div style="margin:0;font-size:11pt;line-height:15pt;font-weight:700">${esc(v.name || "Your Name")}</div>` +
+    `<div style="margin:0;font-style:italic;color:${C.gray}">${esc(v.deg)} ${esc(v.major || "Your Major")} | Class of ${esc(v.yr)}</div>` +
+    roles + phone +
+    `<div style="margin:${cTop} 0 0">${contact || g + "you@njit.edu</span>"}</div></td></tr></tbody></table>`;
+}
+
+function render() {
+  const { v, errs } = build();
+  $("preview").innerHTML = sigHTML(v);
+  $("errs").textContent = errs[0] || (v.ready ? "" : "Add your name, major, and NJIT email to continue.");
+  $("copy").disabled = !v.ready; $("status").textContent = "";
+}
+$("form").addEventListener("input", render);
+
+$("copy").onclick = async () => {
+  const el = $("preview"), html = el.innerHTML, ok = () => {
+    const s = $("status"), a = document.createElement("a");
+    a.href = CONFIG.helpUrl; a.target = "_blank"; a.rel = "noopener";
+    a.textContent = "Click here for instructions on how to set it up";
+    s.textContent = "Copied. "; s.append(a, ".");
+  };
+  try {
+    await navigator.clipboard.write([new ClipboardItem({
+      "text/html": new Blob([html], { type: "text/html" }),
+      "text/plain": new Blob([el.innerText], { type: "text/plain" }) })]);
+    ok();
+  } catch (e) {
+    const r = document.createRange(); r.selectNode(el.firstElementChild);
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    let done = false; try { done = document.execCommand("copy"); } catch (_) {}
+    s.removeAllRanges();
+    done ? ok() : $("status").textContent = "Copy failed. Select the preview with your mouse and press Ctrl+C or Cmd+C.";
+  }
+};
+render();
+</script>
+</body>
+</html>
