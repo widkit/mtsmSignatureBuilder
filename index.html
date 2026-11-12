@@ -1,299 +1,815 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Email Signature Builder | Martin Tuchman School of Management</title>
-<style>
-:root{--red:#cc0000;--dark:#a30000;--blue:#1c1475;--ink:#1f1f24;--mute:#6b6b73;--line:#dcdce0;--bg:#f4f3f1}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI","Gill Sans",Calibri,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--red)}
-.in{max-width:1100px;margin:0 auto;padding:0 22px}
-header{background:#fff;border-bottom:1px solid var(--line)}
-.bar{display:flex;align-items:center;gap:18px;padding-top:16px;padding-bottom:16px}
-.bar img{height:46px;width:auto;display:block}
-.school{flex:1;font-size:1.15rem;font-weight:600;line-height:1.2;color:var(--ink);text-decoration:none;padding-left:18px;border-left:1px solid var(--line)}
-.btn{display:inline-block;background:var(--red);color:#fff;font:700 .82rem/1 inherit;font-family:inherit;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;padding:13px 20px;border:2px solid var(--red);border-radius:3px;cursor:pointer;transition:background .15s,box-shadow .15s}
-.btn:hover{background:var(--dark);border-color:var(--dark)}
-.btn.ghost{background:#fff;color:var(--red)}.btn.ghost:hover{background:var(--red);color:#fff}
-.hero{background:radial-gradient(900px 300px at 85% -20%,rgba(255,255,255,.16),transparent 70%),linear-gradient(135deg,#cc0000,#a30000);color:#fff;padding:34px 0 76px}
-.crumbs{font-size:.85rem;margin:0 0 14px;opacity:.95}.crumbs a{color:#fff}
-h1{font-size:2.5rem;line-height:1.08;margin:0 0 10px;font-weight:600;letter-spacing:-.01em}
-.hero p{margin:0;max-width:60ch;font-size:1.08rem}
-.steps{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 0;padding:0;list-style:none}
-.steps li{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:5px 14px;font-size:.85rem;font-weight:600}
-.steps b{margin-right:6px;opacity:.8}
-.wrap{margin-top:-44px;padding-bottom:56px}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:26px;align-items:start}
-@media(max-width:800px){.grid{grid-template-columns:minmax(0,1fr)}.bar .btn{display:none}h1{font-size:1.9rem}.hero{padding-bottom:64px}}
-form,.panel{position:relative;background:#fff;border:1px solid var(--line);border-radius:6px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 12px 30px rgba(31,31,36,.08);overflow:hidden}
-form::before,.panel::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--blue)}
-.panel+.panel{margin-top:20px}
-h2{font-size:1.15rem;margin:2px 0 14px;font-weight:600}
-label,legend{display:block;font-weight:600;font-size:.85rem;margin:0 0 5px}
-.f{margin-bottom:15px}.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
-input,select{width:100%;font:inherit;font-size:.95rem;padding:10px 11px;border:1px solid #c4c4ca;border-radius:4px;background:#fff;color:var(--ink);transition:border-color .15s,box-shadow .15s}
-input:hover,select:hover{border-color:#9d9da5}
-input:focus,select:focus{outline:0;border-color:var(--red);box-shadow:0 0 0 3px rgba(204,0,0,.15)}
-button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #9a94d6;outline-offset:2px}
-fieldset{border:1px solid var(--line);border-radius:4px;padding:12px;margin:0 0 15px}legend{padding:0 6px}
-.logos{display:flex;gap:12px}
-.logos label{position:relative;flex:1;margin:0;padding:12px 10px 10px;border:2px solid var(--line);border-radius:6px;cursor:pointer;text-align:center;font-size:.8rem;background:#fff;transition:border-color .15s,box-shadow .15s}
-.logos label:hover{border-color:#b5b5bd}
-.logos input{position:absolute;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none}
-.logos img{display:block;margin:0 auto 8px;height:64px;max-width:100%;width:auto;object-fit:contain}
-.logos label:has(input:checked){border-color:var(--red);box-shadow:0 0 0 3px rgba(204,0,0,.12)}
-.logos label:has(input:focus-visible){outline:3px solid #9a94d6}
-.role{display:flex;gap:6px;margin-bottom:8px}.role input{flex:1}
-.x{flex:none;width:38px;border:1px solid #c4c4ca;background:#fff;border-radius:4px;cursor:pointer;font-size:1.1rem}
-.link{background:none;border:0;color:var(--red);font:inherit;font-weight:600;font-size:.85rem;cursor:pointer;padding:0}
-.hint{font-size:.78rem;color:var(--mute);margin-top:4px}
-.err{font-size:.85rem;color:#9b0000;margin:10px 0;min-height:1.2em}
-#preview{padding:20px;border:1px dashed #bbb;border-radius:4px;overflow-x:auto;background:#fff}
-.copy{display:block;width:100%;margin-top:6px;padding:15px;box-shadow:0 2px 0 var(--dark)}
-.copy:disabled{background:#c9c9cf;border-color:#c9c9cf;box-shadow:none;cursor:not-allowed}
-#status{font-size:.9rem;margin:8px 0 0;min-height:1.3em}#status a{font-weight:600}
-details>summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
-details>summary::-webkit-details-marker{display:none}
-details>summary::after{content:"";width:9px;height:9px;border:solid var(--red);border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform .15s;margin:-4px 4px 0 0}
-details[open]>summary::after{transform:rotate(-135deg);margin-top:4px}
-.panel details>summary{font-size:1.15rem;padding:2px 0}
-.panel details[open]>summary{margin-bottom:12px}
-.adv{border-top:1px solid var(--line);padding-top:14px}.adv>summary{font-size:.92rem;margin-bottom:0}.adv[open]>summary{margin-bottom:14px}
-ol{font-size:.93rem;padding-left:20px;margin:10px 0 0}
-.gl{display:inline-block;font-weight:600;font-size:.93rem}
-footer{background:#1f1f24;color:#fff;font-size:.85rem}
-footer .in{padding-top:28px;padding-bottom:28px;display:flex;gap:30px;flex-wrap:wrap;justify-content:space-between}
-footer p{margin:0 0 4px}footer .c{color:#b5b5bd}
-</style>
-</head>
-<body>
-<header><div class="in bar">
-  <a href="https://www.njit.edu" aria-label="NJIT home"><img src="https://www.njit.edu/themes/custom/njit/img/logo.svg" alt="New Jersey Institute of Technology" onerror="this.onerror=null;this.src='img/email/njit.png'"></a>
-  <a class="school" href="https://management.njit.edu/">Martin Tuchman School of Management</a>
-  <a class="btn ghost" href="https://management.njit.edu/">MTSM Home</a>
-</div></header>
-<section class="hero"><div class="in">
-  <p class="crumbs"><a href="https://management.njit.edu/">Home</a> / <a href="https://management.njit.edu/students">Students</a> / Email Signature Builder</p>
-  <h1>Email Signature Builder</h1>
-  <p>Create a professional Gmail signature that follows the NJIT and MTSM standard. The logo, fonts, and colors are fixed.</p>
-  <ul class="steps"><li><b>1</b>Fill in your details</li><li><b>2</b>Copy your signature</li><li><b>3</b>Paste it into Gmail</li></ul>
-</div></section>
-
-<main class="in wrap"><div class="grid">
-<form id="form" autocomplete="off" onsubmit="return false">
-  <h2>Your details</h2>
-  <div class="f"><label for="name">Full name</label><input id="name" maxlength="40" autocomplete="name"></div>
-  <div class="row f">
-    <div><label for="deg">Degree</label><select id="deg"><option>B.S.</option><option>B.A.</option><option>B.Arch.</option><option>M.S.</option><option>MBA</option><option>Ph.D.</option></select></div>
-    <div style="flex:2"><label for="major">Major</label><input id="major" maxlength="40" placeholder="Business Analytics"></div>
-  </div>
-  <div class="f"><label for="yr">Class year</label><select id="yr"></select></div>
-  <div class="f" role="radiogroup" aria-labelledby="lg"><label id="lg">Logo</label>
-    <div class="logos">
-      <label><input type="radio" name="logo" value="mtsm" checked><img src="img/email/mtsm.png" alt="NJIT Martin Tuchman School of Management logo">MTSM</label>
-      <label><input type="radio" name="logo" value="njit"><img src="img/email/njit.png" alt="NJIT logo">NJIT</label>
-    </div>
-  </div>
-  <fieldset><legend>Roles and involvement (up to 4)</legend>
-    <div id="roles"></div>
-    <button type="button" class="link" id="add">+ Add a role</button>
-  </fieldset>
-  <div class="f"><label for="phone">Phone (optional)</label><div class="row"><select id="ptype" aria-label="Phone type" style="flex:0 0 120px"><option value="o">Office</option><option value="p">Personal</option></select><input id="phone" type="tel" maxlength="20" placeholder="973-555-0123"></div><div class="hint">10-digit US number. Formatted for you.</div></div>
-  <div class="f"><label for="email">NJIT email</label><input id="email" type="email" maxlength="60" placeholder="ucid@njit.edu"></div>
-  <div class="f"><label for="li">LinkedIn URL (optional)</label><input id="li" maxlength="120" placeholder="linkedin.com/in/your-name"></div>
-  <details class="adv"><summary>Advanced options</summary>
-    <div class="f"><label for="pron">Pronouns (optional)</label><input id="pron" maxlength="20" placeholder="she/her"></div>
-    <div class="row f"><div><label for="xl">Extra link label</label><input id="xl" maxlength="30" placeholder="Portfolio"></div><div style="flex:2"><label for="xu">Extra link address</label><input id="xu" maxlength="150" placeholder="https://..."></div></div>
-    <div class="f" id="badgeRow"><label for="badge">Image below your signature</label><select id="badge"></select></div>
-    <div id="custom" hidden>
-      <div class="f"><label for="iu">Image link</label><input id="iu" maxlength="250" placeholder="https://example.com/logo.png"><div class="hint">The image must already be online at a public https link (.png, .jpg, .gif, or .webp). Gmail can't use files from your computer.</div></div>
-      <div class="f"><label for="ia">Image description</label><input id="ia" maxlength="60" placeholder="Student Investment Fund"><div class="hint">Shown if the image is blocked, and read aloud by screen readers.</div></div>
-    </div>
-  </details>
-</form>
-
-<div>
-  <div class="panel">
-    <h2>Preview</h2>
-    <div id="preview"></div>
-    <p class="err" id="errs" role="alert"></p>
-    <button class="btn copy" id="copy" type="button" disabled>Copy signature</button>
-    <p id="status" role="status"></p>
-  </div>
-  <div class="panel">
-    <details><summary>Add it to Gmail</summary>
-      <a class="gl" id="gl" href="https://support.google.com/mail/answer/8395" target="_blank" rel="noopener">Google's instructions for adding a signature &rarr;</a>
-      <ol>
-        <li>Click <b>Copy signature</b>.</li>
-        <li>In Gmail, click the gear icon, then <b>See all settings</b>.</li>
-        <li>On the <b>General</b> tab, scroll to <b>Signature</b> and click <b>Create new</b>.</li>
-        <li>Paste into the box (Ctrl+V or Cmd+V), then click <b>Save Changes</b> at the bottom.</li>
-      </ol>
-    </details>
-  </div>
-</div>
-</div></main>
-
-<footer><div class="in">
-  <div><p><b>Martin Tuchman School of Management</b></p><p class="c">University Heights<br>Newark, New Jersey 07102 USA<br>(973) 596-3000</p></div>
-  <p class="c">2026 Copyright &copy; New Jersey Institute of Technology. All Rights Reserved.</p>
-</div></footer>
-
-<script>
-// ---- Settings the web team can change ----
-const CONFIG = {
-  // Logos live in this repo's img/ folder and are served by GitHub Pages. Gmail needs full https image links.
-  base: "https://widkit.github.io/mtsmSignatureBuilder/img/",
-  // Email logos are exported at 3x their display size (w x h) so they stay sharp on high-DPI screens.
-  logos: {
-    mtsm: { file: "email/mtsm.png", alt: "NJIT Martin Tuchman School of Management", w: 170, h: 82 },
-    njit: { file: "email/njit.png", alt: "New Jersey Institute of Technology", w: 170, h: 68 }
-  },
-  // Approved images students can add below the signature. Add the file to img/badges/ and list it here, e.g.
-  // { name: "Student Investment Fund", file: "badges/student-investment-fund.png", alt: "Student Investment Fund", h: 48 }
-  badges: [],
-  allowCustomImage: true,   // lets students paste a link to their own hosted image; set to false to allow only the list above
-  badgeH: 48,
-  red: "#cc0000", gray: "#6f6f6f", text: "#333333",
-  emailDomain: "@njit.edu", maxRoles: 4,
-  // Page the "Click here for instructions" link opens after copying. Swap in your own MTSM instructions page.
-  helpUrl: "https://support.google.com/mail/answer/8395"
-};
-
-const $ = id => document.getElementById(id);
-const esc = s => s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const clean = s => s.replace(/\s+/g, " ").trim();
-const fixCase = s => { s = clean(s); return (s === s.toLowerCase() || s === s.toUpperCase())
-  ? s.toLowerCase().replace(/(^|[\s'’-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()) : s; };
-// For majors, titles, and organizations: keeps acronyms (up to 4 capital letters, e.g. MTSM, NJIT) and mixed-case words as typed.
-const SMALL = new Set(["of", "and", "the", "for", "in", "at", "to", "on", "a", "an"]);
-const cap = w => w.replace(/(^|[-\/(])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
-const fixText = s => clean(s).split(" ").map((w, i) => {
-  const L = w.replace(/[^\p{L}]/gu, "");
-  if (!L) return w;
-  if (L === L.toUpperCase() && L !== L.toLowerCase()) return L.length <= 4 ? w : cap(w.toLowerCase());
-  if (L === L.toLowerCase()) return (i && SMALL.has(w)) ? w : cap(w);
-  return w;
-}).join(" ");
-
-// class years
-const y0 = new Date().getFullYear();
-for (let y = y0; y <= y0 + 5; y++) $("yr").add(new Option(y, y));
-
-// role rows
-function addRole(t = "", o = "") {
-  if ($("roles").children.length >= CONFIG.maxRoles) return;
-  const d = document.createElement("div"); d.className = "role";
-  d.innerHTML = '<input class="rt" maxlength="60" placeholder="Title, e.g. Student Assistant" aria-label="Role title"><input class="ro" maxlength="60" placeholder="Organization" aria-label="Organization"><button type="button" class="x" aria-label="Remove role">&times;</button>';
-  d.querySelector(".rt").value = t; d.querySelector(".ro").value = o;
-  d.querySelector(".x").onclick = () => { d.remove(); toggleAdd(); render(); };
-  $("roles").appendChild(d); toggleAdd();
-}
-const toggleAdd = () => $("add").hidden = $("roles").children.length >= CONFIG.maxRoles;
-$("add").onclick = () => { addRole(); render(); };
-addRole();
-{ const sel = $("badge"); sel.add(new Option("None", "none"));
-  CONFIG.badges.forEach((b, i) => sel.add(new Option(b.name, i)));
-  if (CONFIG.allowCustomImage) sel.add(new Option("My own image (link)", "custom"));
-  if (sel.options.length < 2) $("badgeRow").hidden = true; }
-
-function build() {
-  const errs = [], v = {};
-  v.name = fixCase($("name").value);
-  v.major = fixText($("major").value);
-  v.deg = $("deg").value; v.yr = $("yr").value; v.logo = (document.querySelector('input[name="logo"]:checked') || {}).value;
-  v.roles = [...$("roles").children].map(r => ({ t: fixText(r.querySelector(".rt").value), o: fixText(r.querySelector(".ro").value) })).filter(r => r.t);
-
-  const em = $("email").value.trim().toLowerCase();
-  v.email = em;
-  if (em && !(/^[^\s@]+@njit\.edu$/.test(em))) errs.push("Use your NJIT email address (ending in " + CONFIG.emailDomain + ").");
-
-  const pd = $("phone").value.replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
-  v.phone = ""; v.ptype = $("ptype").value === "p" ? "p" : "o";
-  if ($("phone").value.trim()) {
-    if (pd.length === 10) v.phone = "+1 (" + pd.slice(0,3) + ") " + pd.slice(3,6) + "-" + pd.slice(6);
-    else errs.push("Enter a 10-digit US phone number, or leave it blank.");
-  }
-
-  let li = $("li").value.trim(); v.li = "";
-  if (li) {
-    if (!/^https?:\/\//i.test(li)) li = "https://" + li;
-    if (/^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/in\/[\w\-%]+\/?$/i.test(li)) v.li = li;
-    else errs.push("Use your LinkedIn profile link, like linkedin.com/in/your-name.");
-  }
-  const C = CONFIG;
-  v.pron = $("pron").value.trim().toLowerCase().replace(/^\(|\)$/g, "");
-  if (v.pron && !/^[a-z]{2,10}(\/[a-z]{2,10}){1,2}$/.test(v.pron)) { errs.push("Pronouns should look like she/her or they/them."); v.pron = ""; }
-  const xl = clean($("xl").value), xu = $("xu").value.trim(); v.xl = v.xu = "";
-  if (xl || xu) {
-    if (xl && /^https:\/\/[^\s"'<>]+$/i.test(xu)) { v.xl = fixText(xl); v.xu = xu; }
-    else errs.push("For an extra link, add a label and a full https:// address.");
-  }
-  v.img = null; const bv = $("badge").value;
-  if (bv === "custom") {
-    const iu = $("iu").value.trim(), ia = clean($("ia").value);
-    if (iu || ia) {
-      if (!/^https:\/\/[^\s"'<>]+\.(png|jpe?g|gif|webp)(\?[^\s"'<>]*)?$/i.test(iu)) errs.push("Image link must be a public https link ending in .png, .jpg, .gif, or .webp.");
-      else if (!ia) errs.push("Add a short description for the image.");
-      else v.img = { src: iu, alt: ia };
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email Signature Builder | Martin Tuchman School of Management</title>
+  <style>
+    :root {
+      --red: #cc0000;
+      --dark: #a30000;
+      --blue: #1c1475;
+      --ink: #1f1f24;
+      --mute: #6b6b73;
+      --line: #dcdce0;
+      --bg: #f4f3f1
     }
-  } else if (bv !== "none") { const b = C.badges[+bv]; if (b) v.img = { src: C.base + b.file, alt: b.alt, h: b.h }; }
-  v.ready = !!(v.name && v.major && /^[^\s@]+@njit\.edu$/.test(em)) && !errs.length;
-  return { v, errs };
-}
 
-function sigHTML(v) {
-  const C = CONFIG, g = `<span style="color:${C.gray}">`;
-  const lg = C.logos[v.logo] || C.logos.mtsm;
-  const line = (t, o, first) => `<div style="margin:${first ? "6pt" : "0"} 0 0">${esc(t)}${o ? " " + g + "| " + esc(o) + "</span>" : ""}</div>`;
-  const roles = v.roles.map((r, i) => line(r.t, r.o, i === 0)).join("");
-  const phone = v.phone ? `<div style="margin:6pt 0 0;color:${C.gray}">${v.ptype}: <span style="color:${C.red}">${esc(v.phone)}</span></div>` : "";
-  const link = (h, t) => `<a href="${esc(h)}" style="color:${C.red};text-decoration:none" target="_blank">${esc(t)}</a>`;
-  const contact = [v.email ? link("mailto:" + v.email, v.email) : "", v.li ? link(v.li, "LinkedIn") : "", v.xu ? link(v.xu, v.xl) : ""].filter(Boolean).join(` ${g}|</span> `);
-  const cTop = v.phone ? "0" : "6pt";
-  const ih = v.img ? (v.img.h || C.badgeH) : 0;
-  const below = v.img ? `<div style="margin:10px 0 0"><img src="${esc(v.img.src)}" height="${ih}" alt="${esc(v.img.alt)}" style="display:block;border:0;height:${ih}px;width:auto;font-family:Arial,sans-serif;font-size:9pt;color:${C.text}"></div>` : "";
-  return `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border:none"><tbody><tr>` +
-    `<td style="border-right:2pt solid ${C.red};vertical-align:middle;padding:0 14pt 0 0"><img src="${esc(C.base + lg.file)}" width="${lg.w}" height="${lg.h}" alt="${esc(lg.alt)}" style="display:block;border:0;font-family:Arial,sans-serif;font-size:9pt;color:${C.red}"></td>` +
-    `<td style="vertical-align:middle;padding:0 0 0 14pt;font-family:Arial,sans-serif;font-size:9pt;line-height:13pt;color:${C.text}">` +
-    `<div style="margin:0;font-size:11pt;line-height:15pt;font-weight:700">${esc(v.name || "Your Name")}${v.pron ? ` <span style="font-size:9pt;font-weight:400;color:${C.gray}">(${esc(v.pron)})</span>` : ""}</div>` +
-    `<div style="margin:0;font-style:italic;color:${C.gray}">${esc(v.deg)} ${esc(v.major || "Your Major")} | Class of ${esc(v.yr)}</div>` +
-    roles + phone +
-    `<div style="margin:${cTop} 0 0">${contact || g + "you@njit.edu</span>"}</div></td></tr></tbody></table>` + below;
-}
+    * {
+      box-sizing: border-box
+    }
 
-function render() {
-  $("custom").hidden = $("badge").value !== "custom";
-  const { v, errs } = build();
-  $("preview").innerHTML = sigHTML(v);
-  $("errs").textContent = errs[0] || (v.ready ? "" : "Add your name, major, and NJIT email to continue.");
-  $("copy").disabled = !v.ready; $("status").textContent = "";
-}
-$("form").addEventListener("input", render);
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.55 "Segoe UI", "Gill Sans", Calibri, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased
+    }
 
-$("copy").onclick = async () => {
-  const el = $("preview"), html = el.innerHTML, ok = () => {
-    const s = $("status"), a = document.createElement("a");
-    a.href = CONFIG.helpUrl; a.target = "_blank"; a.rel = "noopener";
-    a.textContent = "Click here for instructions on how to set it up";
-    s.textContent = "Copied. "; s.append(a, ".");
-  };
-  try {
-    await navigator.clipboard.write([new ClipboardItem({
-      "text/html": new Blob([html], { type: "text/html" }),
-      "text/plain": new Blob([el.innerText], { type: "text/plain" }) })]);
-    ok();
-  } catch (e) {
-    const r = document.createRange(); r.selectNodeContents(el);
-    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
-    let done = false; try { done = document.execCommand("copy"); } catch (_) {}
-    s.removeAllRanges();
-    done ? ok() : $("status").textContent = "Copy failed. Select the preview with your mouse and press Ctrl+C or Cmd+C.";
-  }
-};
-render();
-</script>
+    a {
+      color: var(--red)
+    }
+
+    .in {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 22px
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .bar {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding-top: 16px;
+      padding-bottom: 16px
+    }
+
+    .bar img {
+      height: 46px;
+      width: auto;
+      display: block
+    }
+
+    .school {
+      flex: 1;
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--ink);
+      text-decoration: none;
+      padding-left: 18px;
+      border-left: 1px solid var(--line)
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--red);
+      color: #fff;
+      font: 700 .82rem/1 inherit;
+      font-family: inherit;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 13px 20px;
+      border: 2px solid var(--red);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background .15s, box-shadow .15s
+    }
+
+    .btn:hover {
+      background: var(--dark);
+      border-color: var(--dark)
+    }
+
+    .btn.ghost {
+      background: #fff;
+      color: var(--red)
+    }
+
+    .btn.ghost:hover {
+      background: var(--red);
+      color: #fff
+    }
+
+    .hero {
+      background: radial-gradient(900px 300px at 85% -20%, rgba(255, 255, 255, .16), transparent 70%), linear-gradient(135deg, #cc0000, #a30000);
+      color: #fff;
+      padding: 34px 0 76px
+    }
+
+    .crumbs {
+      font-size: .85rem;
+      margin: 0 0 14px;
+      opacity: .95
+    }
+
+    .crumbs a {
+      color: #fff
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      line-height: 1.08;
+      margin: 0 0 10px;
+      font-weight: 600;
+      letter-spacing: -.01em
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 60ch;
+      font-size: 1.08rem
+    }
+
+    .steps {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0 0;
+      padding: 0;
+      list-style: none
+    }
+
+    .steps li {
+      background: rgba(255, 255, 255, .16);
+      border: 1px solid rgba(255, 255, 255, .3);
+      border-radius: 99px;
+      padding: 5px 14px;
+      font-size: .85rem;
+      font-weight: 600
+    }
+
+    .steps b {
+      margin-right: 6px;
+      opacity: .8
+    }
+
+    .wrap {
+      margin-top: -44px;
+      padding-bottom: 56px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: 26px;
+      align-items: start
+    }
+
+    @media(max-width:800px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr)
+      }
+
+      .bar .btn {
+        display: none
+      }
+
+      h1 {
+        font-size: 1.9rem
+      }
+
+      .hero {
+        padding-bottom: 64px
+      }
+    }
+
+    form,
+    .panel {
+      position: relative;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 24px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 12px 30px rgba(31, 31, 36, .08);
+      overflow: hidden
+    }
+
+    form::before,
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: var(--blue)
+    }
+
+    .panel+.panel {
+      margin-top: 20px
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      margin: 2px 0 14px;
+      font-weight: 600
+    }
+
+    label,
+    legend {
+      display: block;
+      font-weight: 600;
+      font-size: .85rem;
+      margin: 0 0 5px
+    }
+
+    .f {
+      margin-bottom: 15px
+    }
+
+    .row {
+      display: flex;
+      gap: 10px
+    }
+
+    .row>* {
+      flex: 1;
+      min-width: 0
+    }
+
+    input,
+    select {
+      width: 100%;
+      font: inherit;
+      font-size: .95rem;
+      padding: 10px 11px;
+      border: 1px solid #c4c4ca;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--ink);
+      transition: border-color .15s, box-shadow .15s
+    }
+
+    input:hover,
+    select:hover {
+      border-color: #9d9da5
+    }
+
+    input:focus,
+    select:focus {
+      outline: 0;
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(204, 0, 0, .15)
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid #9a94d6;
+      outline-offset: 2px
+    }
+
+    fieldset {
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 12px;
+      margin: 0 0 15px
+    }
+
+    legend {
+      padding: 0 6px
+    }
+
+    .logos {
+      display: flex;
+      gap: 12px
+    }
+
+    .logos label {
+      position: relative;
+      flex: 1;
+      margin: 0;
+      padding: 12px 10px 10px;
+      border: 2px solid var(--line);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      font-size: .8rem;
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s
+    }
+
+    .logos label:hover {
+      border-color: #b5b5bd
+    }
+
+    .logos input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .logos img {
+      display: block;
+      margin: 0 auto 8px;
+      height: 64px;
+      max-width: 100%;
+      width: auto;
+      object-fit: contain
+    }
+
+    .logos label:has(input:checked) {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(204, 0, 0, .12)
+    }
+
+    .logos label:has(input:focus-visible) {
+      outline: 3px solid #9a94d6
+    }
+
+    .role {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px
+    }
+
+    .role input {
+      flex: 1
+    }
+
+    .x {
+      flex: none;
+      width: 38px;
+      border: 1px solid #c4c4ca;
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.1rem
+    }
+
+    .link {
+      background: none;
+      border: 0;
+      color: var(--red);
+      font: inherit;
+      font-weight: 600;
+      font-size: .85rem;
+      cursor: pointer;
+      padding: 0
+    }
+
+    .hint {
+      font-size: .78rem;
+      color: var(--mute);
+      margin-top: 4px
+    }
+
+    .err {
+      font-size: .85rem;
+      color: #9b0000;
+      margin: 10px 0;
+      min-height: 1.2em
+    }
+
+    #preview {
+      padding: 20px;
+      border: 1px dashed #bbb;
+      border-radius: 4px;
+      overflow-x: auto;
+      background: #fff
+    }
+
+    .copy {
+      display: block;
+      width: 100%;
+      margin-top: 6px;
+      padding: 15px;
+      box-shadow: 0 2px 0 var(--dark)
+    }
+
+    .copy:disabled {
+      background: #c9c9cf;
+      border-color: #c9c9cf;
+      box-shadow: none;
+      cursor: not-allowed
+    }
+
+    #status {
+      font-size: .9rem;
+      margin: 8px 0 0;
+      min-height: 1.3em
+    }
+
+    #status a {
+      font-weight: 600
+    }
+
+    details>summary {
+      cursor: pointer;
+      font-weight: 600;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    details>summary::-webkit-details-marker {
+      display: none
+    }
+
+    details>summary::after {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border: solid var(--red);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      transition: transform .15s;
+      margin: -4px 4px 0 0
+    }
+
+    details[open]>summary::after {
+      transform: rotate(-135deg);
+      margin-top: 4px
+    }
+
+    .panel details>summary {
+      font-size: 1.15rem;
+      padding: 2px 0
+    }
+
+    .panel details[open]>summary {
+      margin-bottom: 12px
+    }
+
+    .adv {
+      border-top: 1px solid var(--line);
+      padding-top: 14px
+    }
+
+    .adv>summary {
+      font-size: .92rem;
+      margin-bottom: 0
+    }
+
+    .adv[open]>summary {
+      margin-bottom: 14px
+    }
+
+    ol {
+      font-size: .93rem;
+      padding-left: 20px;
+      margin: 10px 0 0
+    }
+
+    .gl {
+      display: inline-block;
+      font-weight: 600;
+      font-size: .93rem
+    }
+
+    footer {
+      background: #1f1f24;
+      color: #fff;
+      font-size: .85rem
+    }
+
+    footer .in {
+      padding-top: 28px;
+      padding-bottom: 28px;
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: space-between
+    }
+
+    footer p {
+      margin: 0 0 4px
+    }
+
+    footer .c {
+      color: #b5b5bd
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="in bar">
+      <a href="https://www.njit.edu" aria-label="NJIT home"><img
+          src="https://www.njit.edu/themes/custom/njit/img/logo.svg" alt="New Jersey Institute of Technology"
+          onerror="this.onerror=null;this.src='img/email/njit.png'"></a>
+      <a class="school" href="https://management.njit.edu/">Martin Tuchman School of Management</a>
+      <a class="btn ghost" href="https://management.njit.edu/">MTSM Home</a>
+    </div>
+  </header>
+  <section class="hero">
+    <div class="in">
+      <p class="crumbs"><a href="https://management.njit.edu/">Home</a> / <a
+          href="https://management.njit.edu/students">Students</a> / Email Signature Builder</p>
+      <h1>Email Signature Builder</h1>
+      <p>Create a professional Gmail signature that follows the NJIT and MTSM standard. The logo, fonts, and colors are
+        fixed.</p>
+      <ul class="steps">
+        <li><b>1</b>Fill in your details</li>
+        <li><b>2</b>Copy your signature</li>
+        <li><b>3</b>Paste it into Gmail</li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="in wrap">
+    <div class="grid">
+      <form id="form" autocomplete="off" onsubmit="return false">
+        <h2>Your details</h2>
+        <div class="f"><label for="name">Full name</label><input id="name" maxlength="40" autocomplete="name"></div>
+        <div class="row f">
+          <div><label for="deg">Degree</label><select id="deg">
+              <option>B.S.</option>
+              <option>B.A.</option>
+              <option>B.Arch.</option>
+              <option>M.S.</option>
+              <option>MBA</option>
+              <option>Ph.D.</option>
+            </select></div>
+          <div style="flex:2"><label for="major">Major</label><input id="major" maxlength="40"
+              placeholder="Business Analytics"></div>
+        </div>
+        <div class="f"><label for="yr">Class year</label><select id="yr"></select></div>
+        <div class="f" role="radiogroup" aria-labelledby="lg"><label id="lg">Logo</label>
+          <div class="logos">
+            <label><input type="radio" name="logo" value="mtsm" checked><img src="img/email/mtsm.png"
+                alt="NJIT Martin Tuchman School of Management logo">MTSM</label>
+            <label><input type="radio" name="logo" value="njit"><img src="img/email/njit.png"
+                alt="NJIT logo">NJIT</label>
+          </div>
+        </div>
+        <fieldset>
+          <legend>Roles and involvement (up to 4)</legend>
+          <div id="roles"></div>
+          <button type="button" class="link" id="add">+ Add a role</button>
+        </fieldset>
+        <div class="f"><label for="phone">Phone (optional)</label>
+          <div class="row"><select id="ptype" aria-label="Phone type" style="flex:0 0 120px">
+              <option value="o">Office</option>
+              <option value="p">Personal</option>
+            </select><input id="phone" type="tel" maxlength="20" placeholder="973-555-0123"></div>
+          <div class="hint">10-digit US number. Formatted for you.</div>
+        </div>
+        <div class="f"><label for="email">NJIT email</label><input id="email" type="email" maxlength="60"
+            placeholder="ucid@njit.edu"></div>
+        <div class="f"><label for="li">LinkedIn URL (optional)</label><input id="li" maxlength="120"
+            placeholder="linkedin.com/in/your-name"></div>
+        <details class="adv">
+          <summary>Advanced options</summary>
+          <fieldset>
+            <legend>Previous degree (optional)</legend>
+            <div class="row f">
+              <div><label for="pdeg">Degree</label><select id="pdeg">
+                  <option>B.S.</option>
+                  <option>B.A.</option>
+                  <option>B.Arch.</option>
+                  <option>M.S.</option>
+                  <option>MBA</option>
+                  <option>Ph.D.</option>
+                </select></div>
+              <div style="flex:2"><label for="pmajor">Major</label><input id="pmajor" maxlength="40"
+                  placeholder="Business"></div>
+            </div>
+            <div class="row">
+              <div style="flex:2"><label for="psch">School</label><input id="psch" maxlength="40" placeholder="NJIT">
+              </div>
+              <div><label for="pyr">Graduated</label><select id="pyr"></select></div>
+            </div>
+            <div class="hint">Completed degrees only. Leave the school blank for NJIT.</div>
+          </fieldset>
+          <div class="f"><label for="pron">Pronouns (optional)</label><input id="pron" maxlength="20"
+              placeholder="she/her"></div>
+          <div class="row f">
+            <div><label for="xl">Extra link label</label><input id="xl" maxlength="30" placeholder="Portfolio"></div>
+            <div style="flex:2"><label for="xu">Extra link address</label><input id="xu" maxlength="150"
+                placeholder="https://..."></div>
+          </div>
+          <div class="f" id="badgeRow"><label for="badge">Image below your signature</label><select id="badge"></select>
+          </div>
+          <div id="custom" hidden>
+            <div class="f"><label for="iu">Image link</label><input id="iu" maxlength="250"
+                placeholder="https://example.com/logo.png">
+              <div class="hint">The image must already be online at a public https link (.png, .jpg, .gif, or .webp).
+                Gmail can't use files from your computer.</div>
+            </div>
+            <div class="f"><label for="ia">Image description</label><input id="ia" maxlength="60"
+                placeholder="Student Investment Fund">
+              <div class="hint">Shown if the image is blocked, and read aloud by screen readers.</div>
+            </div>
+          </div>
+        </details>
+      </form>
+
+      <div>
+        <div class="panel">
+          <h2>Preview</h2>
+          <div id="preview"></div>
+          <p class="err" id="errs" role="alert"></p>
+          <button class="btn copy" id="copy" type="button" disabled>Copy signature</button>
+          <p id="status" role="status"></p>
+        </div>
+        <div class="panel">
+          <details>
+            <summary>Add it to Gmail</summary>
+            <a class="gl" id="gl" href="https://support.google.com/mail/answer/8395" target="_blank"
+              rel="noopener">Google's instructions for adding a signature &rarr;</a>
+            <ol>
+              <li>Click <b>Copy signature</b>.</li>
+              <li>In Gmail, click the gear icon, then <b>See all settings</b>.</li>
+              <li>On the <b>General</b> tab, scroll to <b>Signature</b> and click <b>Create new</b>.</li>
+              <li>Paste into the box (Ctrl+V or Cmd+V), then click <b>Save Changes</b> at the bottom.</li>
+            </ol>
+          </details>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="in">
+      <div>
+        <p><b>Martin Tuchman School of Management</b></p>
+        <p class="c">University Heights<br>Newark, New Jersey 07102 USA<br>(973) 596-3000</p>
+      </div>
+      <p class="c">2026 Copyright &copy; New Jersey Institute of Technology. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ---- Settings the web team can change ----
+    const CONFIG = {
+      // Logos live in this repo's img/ folder and are served by GitHub Pages. Gmail needs full https image links.
+      base: "https://widkit.github.io/mtsmSignatureBuilder/img/",
+      // Email logos are exported at 3x their display size (w x h) so they stay sharp on high-DPI screens.
+      logos: {
+        mtsm: { file: "email/mtsm.png", alt: "NJIT Martin Tuchman School of Management", w: 170, h: 82 },
+        njit: { file: "email/njit.png", alt: "New Jersey Institute of Technology", w: 170, h: 68 }
+      },
+      // Approved images students can add below the signature. Add the file to img/badges/ and list it here, e.g.
+      // { name: "Student Investment Fund", file: "badges/student-investment-fund.png", alt: "Student Investment Fund", h: 48 }
+      badges: [],
+      allowCustomImage: true,   // lets students paste a link to their own hosted image; set to false to allow only the list above
+      badgeH: 48,
+      red: "#cc0000", gray: "#6f6f6f", text: "#333333",
+      emailDomain: "@njit.edu", maxRoles: 4,
+      // Page the "Click here for instructions" link opens after copying. Swap in your own MTSM instructions page.
+      helpUrl: "https://support.google.com/mail/answer/8395"
+    };
+
+    const $ = id => document.getElementById(id);
+    const esc = s => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const clean = s => s.replace(/\s+/g, " ").trim();
+    const fixCase = s => {
+      s = clean(s); return (s === s.toLowerCase() || s === s.toUpperCase())
+        ? s.toLowerCase().replace(/(^|[\s'’-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()) : s;
+    };
+    // For majors, titles, and organizations: keeps acronyms (up to 4 capital letters, e.g. MTSM, NJIT) and mixed-case words as typed.
+    const SMALL = new Set(["of", "and", "the", "for", "in", "at", "to", "on", "a", "an"]);
+    const cap = w => w.replace(/(^|[-\/(])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+    const fixText = s => clean(s).split(" ").map((w, i) => {
+      const L = w.replace(/[^\p{L}]/gu, "");
+      if (!L) return w;
+      if (L === L.toUpperCase() && L !== L.toLowerCase()) return L.length <= 4 ? w : cap(w.toLowerCase());
+      if (L === L.toLowerCase()) return (i && SMALL.has(w)) ? w : cap(w);
+      return w;
+    }).join(" ");
+
+    // class years
+    const y0 = new Date().getFullYear();
+    for (let y = y0; y <= y0 + 5; y++) $("yr").add(new Option(y, y));
+    $("pyr").add(new Option("Year", ""));
+    for (let y = y0; y >= y0 - 20; y--) $("pyr").add(new Option(y, y));
+
+    // role rows
+    function addRole(t = "", o = "") {
+      if ($("roles").children.length >= CONFIG.maxRoles) return;
+      const d = document.createElement("div"); d.className = "role";
+      d.innerHTML = '<input class="rt" maxlength="60" placeholder="Title, e.g. Student Assistant" aria-label="Role title"><input class="ro" maxlength="60" placeholder="Organization" aria-label="Organization"><button type="button" class="x" aria-label="Remove role">&times;</button>';
+      d.querySelector(".rt").value = t; d.querySelector(".ro").value = o;
+      d.querySelector(".x").onclick = () => { d.remove(); toggleAdd(); render(); };
+      $("roles").appendChild(d); toggleAdd();
+    }
+    const toggleAdd = () => $("add").hidden = $("roles").children.length >= CONFIG.maxRoles;
+    $("add").onclick = () => { addRole(); render(); };
+    addRole();
+    {
+      const sel = $("badge"); sel.add(new Option("None", "none"));
+      CONFIG.badges.forEach((b, i) => sel.add(new Option(b.name, i)));
+      if (CONFIG.allowCustomImage) sel.add(new Option("My own image (link)", "custom"));
+      if (sel.options.length < 2) $("badgeRow").hidden = true;
+    }
+
+    function build() {
+      const errs = [], v = {};
+      v.name = fixCase($("name").value);
+      v.major = fixText($("major").value);
+      v.deg = $("deg").value; v.yr = $("yr").value; v.logo = (document.querySelector('input[name="logo"]:checked') || {}).value;
+      v.roles = [...$("roles").children].map(r => ({ t: fixText(r.querySelector(".rt").value), o: fixText(r.querySelector(".ro").value) })).filter(r => r.t);
+
+      const em = $("email").value.trim().toLowerCase();
+      v.email = em;
+      if (em && !(/^[^\s@]+@njit\.edu$/.test(em))) errs.push("Use your NJIT email address (ending in " + CONFIG.emailDomain + ").");
+
+      const pd = $("phone").value.replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
+      v.phone = ""; v.ptype = $("ptype").value === "p" ? "p" : "o";
+      if ($("phone").value.trim()) {
+        if (pd.length === 10) v.phone = "+1 (" + pd.slice(0, 3) + ") " + pd.slice(3, 6) + "-" + pd.slice(6);
+        else errs.push("Enter a 10-digit US phone number, or leave it blank.");
+      }
+
+      let li = $("li").value.trim(); v.li = "";
+      if (li) {
+        if (!/^https?:\/\//i.test(li)) li = "https://" + li;
+        if (/^https:\/\/([a-z]{2,3}\.)?linkedin\.com\/in\/[\w\-%]+\/?$/i.test(li)) v.li = li;
+        else errs.push("Use your LinkedIn profile link, like linkedin.com/in/your-name.");
+      }
+      const C = CONFIG;
+      v.prev = ""; const pm = fixText($("pmajor").value), ps = fixText($("psch").value), py = $("pyr").value;
+      if (pm) {
+        if (!py) errs.push("Pick the graduation year for your previous degree.");
+        else if (+py > +v.yr) errs.push("Your previous degree should be earlier than your class year.");
+        else v.prev = `${$("pdeg").value} ${pm}, ${ps || "NJIT"} | ${py}`;
+      } else if (ps || py) errs.push("Add a major for your previous degree, or clear those fields.");
+      v.pron = $("pron").value.trim().toLowerCase().replace(/^\(|\)$/g, "");
+      if (v.pron && !/^[a-z]{2,10}(\/[a-z]{2,10}){1,2}$/.test(v.pron)) { errs.push("Pronouns should look like she/her or they/them."); v.pron = ""; }
+      const xl = clean($("xl").value), xu = $("xu").value.trim(); v.xl = v.xu = "";
+      if (xl || xu) {
+        if (xl && /^https:\/\/[^\s"'<>]+$/i.test(xu)) { v.xl = fixText(xl); v.xu = xu; }
+        else errs.push("For an extra link, add a label and a full https:// address.");
+      }
+      v.img = null; const bv = $("badge").value;
+      if (bv === "custom") {
+        const iu = $("iu").value.trim(), ia = clean($("ia").value);
+        if (iu || ia) {
+          if (!/^https:\/\/[^\s"'<>]+\.(png|jpe?g|gif|webp)(\?[^\s"'<>]*)?$/i.test(iu)) errs.push("Image link must be a public https link ending in .png, .jpg, .gif, or .webp.");
+          else if (!ia) errs.push("Add a short description for the image.");
+          else v.img = { src: iu, alt: ia };
+        }
+      } else if (bv !== "none") { const b = C.badges[+bv]; if (b) v.img = { src: C.base + b.file, alt: b.alt, h: b.h }; }
+      v.ready = !!(v.name && v.major && /^[^\s@]+@njit\.edu$/.test(em)) && !errs.length;
+      return { v, errs };
+    }
+
+    function sigHTML(v) {
+      const C = CONFIG, g = `<span style="color:${C.gray}">`;
+      const lg = C.logos[v.logo] || C.logos.mtsm;
+      const line = (t, o, first) => `<div style="margin:${first ? "6pt" : "0"} 0 0">${esc(t)}${o ? " " + g + "| " + esc(o) + "</span>" : ""}</div>`;
+      const roles = v.roles.map((r, i) => line(r.t, r.o, i === 0)).join("");
+      const phone = v.phone ? `<div style="margin:6pt 0 0;color:${C.gray}">${v.ptype}: <span style="color:${C.red}">${esc(v.phone)}</span></div>` : "";
+      const link = (h, t) => `<a href="${esc(h)}" style="color:${C.red};text-decoration:none" target="_blank">${esc(t)}</a>`;
+      const contact = [v.email ? link("mailto:" + v.email, v.email) : "", v.li ? link(v.li, "LinkedIn") : "", v.xu ? link(v.xu, v.xl) : ""].filter(Boolean).join(` ${g}|</span> `);
+      const cTop = v.phone ? "0" : "6pt";
+      const prevLine = v.prev ? `<div style="margin:0;font-style:italic;color:${C.gray}">${esc(v.prev)}</div>` : "";
+      const ih = v.img ? (v.img.h || C.badgeH) : 0;
+      const below = v.img ? `<div style="margin:10px 0 0"><img src="${esc(v.img.src)}" height="${ih}" alt="${esc(v.img.alt)}" style="display:block;border:0;height:${ih}px;width:auto;font-family:Arial,sans-serif;font-size:9pt;color:${C.text}"></div>` : "";
+      return `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border:none"><tbody><tr>` +
+        `<td style="border-right:2pt solid ${C.red};vertical-align:middle;padding:0 14pt 0 0"><img src="${esc(C.base + lg.file)}" width="${lg.w}" height="${lg.h}" alt="${esc(lg.alt)}" style="display:block;border:0;font-family:Arial,sans-serif;font-size:9pt;color:${C.red}"></td>` +
+        `<td style="vertical-align:middle;padding:0 0 0 14pt;font-family:Arial,sans-serif;font-size:9pt;line-height:13pt;color:${C.text}">` +
+        `<div style="margin:0;font-size:11pt;line-height:15pt;font-weight:700">${esc(v.name || "Your Name")}${v.pron ? ` <span style="font-size:9pt;font-weight:400;color:${C.gray}">(${esc(v.pron)})</span>` : ""}</div>` +
+        `<div style="margin:0;font-style:italic;color:${C.gray}">${esc(v.deg)} ${esc(v.major || "Your Major")} | Class of ${esc(v.yr)}</div>${prevLine}` +
+        roles + phone +
+        `<div style="margin:${cTop} 0 0">${contact || g + "you@njit.edu</span>"}</div></td></tr></tbody></table>` + below;
+    }
+
+    function render() {
+      $("custom").hidden = $("badge").value !== "custom";
+      const { v, errs } = build();
+      $("preview").innerHTML = sigHTML(v);
+      $("errs").textContent = errs[0] || (v.ready ? "" : "Add your name, major, and NJIT email to continue.");
+      $("copy").disabled = !v.ready; $("status").textContent = "";
+    }
+    $("form").addEventListener("input", render);
+
+    $("copy").onclick = async () => {
+      const el = $("preview"), html = el.innerHTML, ok = () => {
+        const s = $("status"), a = document.createElement("a");
+        a.href = CONFIG.helpUrl; a.target = "_blank"; a.rel = "noopener";
+        a.textContent = "Click here for instructions on how to set it up";
+        s.textContent = "Copied. "; s.append(a, ".");
+      };
+      try {
+        await navigator.clipboard.write([new ClipboardItem({
+          "text/html": new Blob([html], { type: "text/html" }),
+          "text/plain": new Blob([el.innerText], { type: "text/plain" })
+        })]);
+        ok();
+      } catch (e) {
+        const r = document.createRange(); r.selectNodeContents(el);
+        const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+        let done = false; try { done = document.execCommand("copy"); } catch (_) { }
+        s.removeAllRanges();
+        done ? ok() : $("status").textContent = "Copy failed. Select the preview with your mouse and press Ctrl+C or Cmd+C.";
+      }
+    };
+    render();
+  </script>
 </body>
+
 </html>
